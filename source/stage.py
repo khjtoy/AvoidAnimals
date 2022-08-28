@@ -1,7 +1,9 @@
+import random
 from turtle import Screen
 import pygame 
 import math
 from player import Player
+from enemy import Enemy
 from settings import *
 
 class stage():
@@ -15,12 +17,14 @@ class stage():
 		
         # player
 		self.player = Player((WIDTH / 5, HEIGTH / 2), [self.visible_sprites])
+
 		
 	def create_background(self):
 		pass
 
 	def run(self):
 		self.visible_sprites.custom_draw(self.player)
+		self.visible_sprites.spawn_enemy()
 		self.visible_sprites.update()
 		
 
@@ -43,6 +47,10 @@ class YSortCameraGroup(pygame.sprite.Group):
 		# define game variables
 		self.scroll = 0
 		self.tiles = math.ceil(WIDTH / self.bg_width) + 1
+
+		# timer
+		self.timer = pygame.time.get_ticks()
+		self.setTime = random.randint(1, 5) * 1000
 
 	def scroll_background(self):
 		# draw scroll background
@@ -69,6 +77,13 @@ class YSortCameraGroup(pygame.sprite.Group):
 			offset_pos = sprite.rect.topleft
 			self.display_surface.blit(sprite.image,offset_pos)
 
+	def spawn_enemy(self):
+		if pygame.time.get_ticks() - self.timer > self.setTime:
+			self.timer = pygame.time.get_ticks()
+			self.setTime = random.randint(1, 5) * 1000
+			self.enemy = Enemy((WIDTH  + 300, HEIGTH / 2), [self])
+
+			
 	#def enemy_update(self,player):
 	#	enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite,'sprite_type') and sprite.sprite_type == 'enemy']
 	#	for enemy in enemy_sprites:

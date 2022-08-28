@@ -14,14 +14,14 @@ class stage():
 		self.visible_sprites = YSortCameraGroup(screen)
 		
         # player
-		self.player = Player((0,0), [self.visible_sprites])
+		self.player = Player((WIDTH / 5, HEIGTH / 2), [self.visible_sprites])
 		
 	def create_background(self):
 		pass
 
 	def run(self):
 		self.visible_sprites.custom_draw(self.player)
-		#self.visible_sprites.scroll_background()
+		self.visible_sprites.update()
 		
 
 class YSortCameraGroup(pygame.sprite.Group):
@@ -57,18 +57,16 @@ class YSortCameraGroup(pygame.sprite.Group):
 			self.scroll = 0
 
 	def custom_draw(self,player):
-
-		# getting the offset 
-		self.offset.x = player.rect.centerx - self.half_width
-		self.offset.y = player.rect.centery - self.half_height
-
 		# drawing the floor
-		floor_offset_pos = self.floor_rect.topleft - self.offset
-		self.display_surface.blit(self.floor_surf,floor_offset_pos)
+
+
+		self.scroll_background()
+		#floor_offset_pos = self.floor_rect.topleft - self.offset
+		#self.display_surface.blit(self.floor_surf,floor_offset_pos)
 
 		# for sprite in self.sprites():
 		for sprite in sorted(self.sprites(),key = lambda sprite: sprite.rect.centery):
-			offset_pos = sprite.rect.topleft - self.offset
+			offset_pos = sprite.rect.topleft
 			self.display_surface.blit(sprite.image,offset_pos)
 
 	#def enemy_update(self,player):

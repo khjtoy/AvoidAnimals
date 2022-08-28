@@ -20,7 +20,7 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
-                    if event.Key == pygame.K_m:
+                    if event.key == pygame.K_m:
                         pass
 
             # self.screen.fill(WATER_COLOR)

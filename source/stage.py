@@ -16,7 +16,7 @@ class stage():
 		self.visible_sprites = YSortCameraGroup(screen)
 		
         # player
-		self.player = Player((WIDTH / 5, HEIGTH / 2), [self.visible_sprites])
+		self.player = Player((WIDTH / 5, HEIGTH / 4), [self.visible_sprites])
 
 		
 	def create_background(self):

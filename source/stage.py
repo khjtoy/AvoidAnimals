@@ -26,6 +26,7 @@ class stage():
 		self.visible_sprites.custom_draw(self.player)
 		self.visible_sprites.spawn_enemy()
 		self.visible_sprites.update()
+		self.visible_sprites.enemy_update(self.player)
 		
 
 class YSortCameraGroup(pygame.sprite.Group):
@@ -83,8 +84,7 @@ class YSortCameraGroup(pygame.sprite.Group):
 			self.setTime = random.randint(1, 5) * 1000
 			self.enemy = Enemy((WIDTH  + 300, HEIGTH / 2), [self])
 
-			
-	#def enemy_update(self,player):
-	#	enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite,'sprite_type') and sprite.sprite_type == 'enemy']
-	#	for enemy in enemy_sprites:
-	#		enemy.enemy_update(player)
+	def enemy_update(self,player):
+		enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, 'sprite_type') and sprite.sprite_type == 'enemy']
+		for enemy in enemy_sprites:
+			enemy.enemy_update(player)

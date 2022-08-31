@@ -51,3 +51,4 @@ class Player(Entity):
 		self.input()
 		self.animate()
 		self.move(5)
+		print()

@@ -5,7 +5,7 @@ from entity import Entity
 from support import import_folder
 
 class Enemy(Entity):
-    def __init__(self,pos,groups):
+    def __init__(self,pos,groups,damage_player):
 
         super().__init__(groups)
         self.sprite_type = 'enemy'
@@ -18,6 +18,8 @@ class Enemy(Entity):
         # graphics setup
         self.import_enemy_assets()
         self.status = 'Move'
+
+        self.damage_player = damage_player
 
     def import_enemy_assets(self):
         charcter_path = '../image/enemy/'
@@ -45,6 +47,7 @@ class Enemy(Entity):
 
         # collision with the player
         if collide:
+            self.damage_player()
             self.kill()
 
     def update(self):

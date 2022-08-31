@@ -14,6 +14,11 @@ class Player(Entity):
 		# graphics setup
 		self.import_player_assets()
 		self.status = 'Move'
+
+		# damage timer
+		self.isDamage = False
+		self.hurt_time = None
+		self.invulnerability_duration = 500
 	
 	def import_player_assets(self):
 		character_path = '../image/player/'
@@ -34,6 +39,13 @@ class Player(Entity):
 		else:
 			self.direction.y = 0
 
+	def cooldowns(self):
+		current_time = pygame.time.get_ticks()
+
+		if self.isDamage:
+			if current_time - self.hurt_time >= self.invulnerability_duration:
+				self.isDamage = False
+
 	def animate(self):
 		animation = self.animations[self.status]
 
@@ -47,8 +59,16 @@ class Player(Entity):
 		self.image = pygame.transform.scale(self.image, (200, 200))
 		self.rect = self.image.get_rect(center = self.hitbox.center)
 
+		# flicker
+		if self.isDamage:
+			alpha = self.wave_value()
+			self.image.set_alpha(alpha)
+		else:
+			self.image.set_alpha(255)
+
 	def update(self):
 		self.input()
+		self.cooldowns()
 		self.animate()
 		self.move(5)
 		print()

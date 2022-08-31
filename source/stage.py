@@ -1,3 +1,4 @@
+from calendar import day_name
 import random
 from turtle import Screen
 import pygame 
@@ -22,9 +23,14 @@ class stage():
 	def create_background(self):
 		pass
 
+	def damage_player(self):
+		if not self.player.isDamage:
+			self.player.isDamage = True
+			self.player.hurt_time = pygame.time.get_ticks()
+
 	def run(self):
 		self.visible_sprites.custom_draw(self.player)
-		self.visible_sprites.spawn_enemy()
+		self.visible_sprites.spawn_enemy(self.damage_player)
 		self.visible_sprites.update()
 		self.visible_sprites.enemy_update(self.player)
 		
@@ -51,7 +57,10 @@ class YSortCameraGroup(pygame.sprite.Group):
 
 		# timer
 		self.timer = pygame.time.get_ticks()
-		self.setTime = random.randint(1, 5) * 1000
+		self.setTime = random.randint(1, 5) * 500
+
+		# random pos
+		self.enemyPos = [0,100,-100]
 
 	def scroll_background(self):
 		# draw scroll background
@@ -78,11 +87,12 @@ class YSortCameraGroup(pygame.sprite.Group):
 			offset_pos = sprite.rect.topleft
 			self.display_surface.blit(sprite.image,offset_pos)
 
-	def spawn_enemy(self):
+	def spawn_enemy(self, damage_player):
 		if pygame.time.get_ticks() - self.timer > self.setTime:
 			self.timer = pygame.time.get_ticks()
-			self.setTime = random.randint(1, 5) * 1000
-			self.enemy = Enemy((WIDTH  + 300, HEIGTH / 2), [self])
+			self.setTime = random.randint(1, 5) * 500
+			self.randomIndex = random.randint(0, 2)
+			self.enemy = Enemy((WIDTH  + 300, (HEIGTH / 2) - self.enemyPos[self.randomIndex]), [self], damage_player)
 
 	def enemy_update(self,player):
 		enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, 'sprite_type') and sprite.sprite_type == 'enemy']

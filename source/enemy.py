@@ -5,7 +5,7 @@ from entity import Entity
 from support import import_folder
 
 class Enemy(Entity):
-    def __init__(self,pos,groups,damage_player):
+    def __init__(self,monster_name,pos,groups,damage_player):
 
         super().__init__(groups)
         self.sprite_type = 'enemy'
@@ -14,16 +14,20 @@ class Enemy(Entity):
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(-6,HITBOX_OFFSET['player'])
         self.direction.x = -1
+        self.monster_name = monster_name
 
         # graphics setup
-        self.import_enemy_assets()
+        self.import_enemy_assets(self.monster_name)
         self.status = 'Move'
+
+        # timer
+        self.timer = pygame.time.get_ticks()
 
         self.damage_player = damage_player
 
-    def import_enemy_assets(self):
-        charcter_path = '../image/enemy/'
+    def import_enemy_assets(self, name):
         self.animations = {'Move': []}
+        charcter_path = f'../image/enemy/{name}/'
 
         for animation in self.animations.keys():
             full_path = charcter_path + animation
@@ -52,8 +56,16 @@ class Enemy(Entity):
 
     def update(self):
         self.animate()
-        self.move(10)
+        if self.monster_name == "pig":
+            self.move(10)
+        elif self.monster_name == "chicken":
+            self.bezierTimer()
 
 
     def enemy_update(self, player):
         self.OncollisionEnter(player)
+
+    def bezierTimer(self):
+        if pygame.time.get_ticks() - self.timer > 500:
+            self.timer = pygame.time.get_ticks()
+            self.bezierMove(0.01)

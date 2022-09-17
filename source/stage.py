@@ -28,11 +28,16 @@ class stage():
 			self.player.isDamage = True
 			self.player.hurt_time = pygame.time.get_ticks()
 
+	def item_panel(self):
+		self.game_paused = True
+
 	def run(self):
-		self.visible_sprites.custom_draw(self.player)
-		self.visible_sprites.spawn_enemy(self.damage_player)
-		self.visible_sprites.update()
-		self.visible_sprites.enemy_update(self.player)
+		self.visible_sprites.custom_draw(self.player, self.game_paused)
+
+		if not self.game_paused:
+			self.visible_sprites.spawn_enemy(self.damage_player)
+			self.visible_sprites.update()
+			self.visible_sprites.enemy_update(self.player)
 		
 
 class YSortCameraGroup(pygame.sprite.Group):
@@ -74,11 +79,11 @@ class YSortCameraGroup(pygame.sprite.Group):
 		if abs(self.scroll) > self.bg_width:
 			self.scroll = 0
 
-	def custom_draw(self,player):
+	def custom_draw(self, player, isPaused):
 		# drawing the floor
 
-
-		self.scroll_background()
+		if not isPaused:
+			self.scroll_background()
 		#floor_offset_pos = self.floor_rect.topleft - self.offset
 		#self.display_surface.blit(self.floor_surf,floor_offset_pos)
 
@@ -92,7 +97,7 @@ class YSortCameraGroup(pygame.sprite.Group):
 			self.timer = pygame.time.get_ticks()
 			self.setTime = random.randint(1, 5) * 500
 			self.randomIndex = random.randint(0, 2)
-			self.enemy = Enemy((WIDTH  + 300, (HEIGTH / 2) - self.enemyPos[self.randomIndex]), [self], damage_player)
+			self.enemy = Enemy("pig",(WIDTH  + 300, (HEIGTH / 2) - self.enemyPos[self.randomIndex]), [self], damage_player)
 
 	def enemy_update(self,player):
 		enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, 'sprite_type') and sprite.sprite_type == 'enemy']

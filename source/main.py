@@ -21,7 +21,7 @@ class Game:
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_m:
-                        pass
+                        self.stage.item_panel()
 
             # self.screen.fill(WATER_COLOR)
 

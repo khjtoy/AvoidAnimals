@@ -1,3 +1,4 @@
+from cmath import rect
 import pygame
 from math import sin
 
@@ -7,7 +8,7 @@ class Entity(pygame.sprite.Sprite):
 		self.frame_index = 0
 		self.animation_speed = 0.15
 		self.direction = pygame.math.Vector2()
-
+		self.hitbox_offset = (0,0)
 	def move(self,speed):
 		if self.direction.magnitude() != 0:
 			self.direction = self.direction.normalize()
@@ -16,6 +17,7 @@ class Entity(pygame.sprite.Sprite):
 		#self.collision('horizontal')
 		self.hitbox.y += self.direction.y * speed
 		#self.collision('vertical')
+
 		self.rect.center = self.hitbox.center
 
 	def bezierMove(self, speed):

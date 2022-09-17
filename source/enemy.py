@@ -47,7 +47,7 @@ class Enemy(Entity):
         self.rect = self.image.get_rect(center = self.hitbox.center)
 
     def OncollisionEnter(self, player):
-        collide = pygame.Rect.colliderect(player.rect, self.rect)
+        collide = pygame.Rect.colliderect(player.hitbox, self.rect)
 
         # collision with the player
         if collide:

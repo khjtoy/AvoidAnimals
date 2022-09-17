@@ -12,6 +12,9 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.stage = stage(self.screen)
+
+
+
         
     def run(self):
         while True:

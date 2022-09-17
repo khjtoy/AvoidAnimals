@@ -6,6 +6,7 @@ import math
 from player import Player
 from enemy import Enemy
 from settings import *
+from debug import debug
 
 class stage():
 	def __init__(self, screen):
@@ -15,10 +16,15 @@ class stage():
 		
 		# sprite group setup
 		self.visible_sprites = YSortCameraGroup(screen)
-		
+
+		self.attackable_entity = list()
         # player
 		self.player = Player((WIDTH / 5, HEIGTH / 4), [self.visible_sprites])
 
+		# 1 Enemy Stage 클래스 에서 생성
+		# 2 생성된 에너미를 리스트 관리 - 삭제 리스트에서 빼기
+		# 3 플레이어 이미지 교체
+		
 		
 	def create_background(self):
 		pass
@@ -38,6 +44,9 @@ class stage():
 			self.visible_sprites.spawn_enemy(self.damage_player)
 			self.visible_sprites.update()
 			self.visible_sprites.enemy_update(self.player)
+
+			# debug
+			debug('Player', self.player.hitbox.top,self.player.hitbox.left,self.player.hitbox.width,self.player.hitbox.height)
 		
 
 class YSortCameraGroup(pygame.sprite.Group):
@@ -97,7 +106,7 @@ class YSortCameraGroup(pygame.sprite.Group):
 			self.timer = pygame.time.get_ticks()
 			self.setTime = random.randint(1, 5) * 500
 			self.randomIndex = random.randint(0, 2)
-			self.enemy = Enemy("pig",(WIDTH  + 300, (HEIGTH / 2) - self.enemyPos[self.randomIndex]), [self], damage_player)
+			self.enemy = Enemy("chicken",(WIDTH  + 300, (HEIGTH / 2) - self.enemyPos[self.randomIndex]), [self], damage_player)
 
 	def enemy_update(self,player):
 		enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, 'sprite_type') and sprite.sprite_type == 'enemy']

@@ -5,7 +5,7 @@ from stage import stage
 
 class Game:
     def __init__(self):
-        # general setup
+        # general setup 
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH,HEIGTH))
         pygame.display.set_caption('Zelda')
@@ -25,6 +25,9 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_m:
                         self.stage.item_panel()
+                    if event.key == pygame.K_1:
+                        self.stage.player.big_mode()
+                        self.stage.visible_sprites.bg_speed = 20
 
             # self.screen.fill(WATER_COLOR)
 

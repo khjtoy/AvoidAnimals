@@ -59,13 +59,8 @@ class Enemy(Entity):
         if self.monster_name == "pig":
             self.move(10)
         elif self.monster_name == "chicken":
-            self.bezierTimer()
+            self.bezierMove(0.02)
 
 
     def enemy_update(self, player):
         self.OncollisionEnter(player)
-
-    def bezierTimer(self):
-        if pygame.time.get_ticks() - self.timer > 500:
-            self.timer = pygame.time.get_ticks()
-            self.bezierMove(0.01)

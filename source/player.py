@@ -13,6 +13,9 @@ class Player(Entity):
 		self.hitbox = self.rect.inflate(-100,-100)
 		self.hitbox_offset = (0,100)
 
+		self.scale = (200, 200)
+		self.inputFlag = True
+
 		# graphics setup
 		self.import_player_assets()
 		self.status = 'Move'
@@ -31,6 +34,8 @@ class Player(Entity):
 			self.animations[animation] = import_folder(full_path) 
 
 	def input(self):
+		if(not self.inputFlag):
+			return
 		mouse = pygame.mouse.get_pressed()
 
 		# movement input
@@ -58,7 +63,7 @@ class Player(Entity):
 
 		# set the image
 		self.image = animation[int(self.frame_index)]
-		self.image = pygame.transform.scale(self.image, (200, 200))
+		self.image = pygame.transform.scale(self.image, (self.scale[0], self.scale[1]))
 		self.rect = self.image.get_rect(center = self.hitbox.center)
 
 		# flicker
@@ -68,9 +73,20 @@ class Player(Entity):
 		else:
 			self.image.set_alpha(255)
 
+	def big_mode(self):
+		self.scale = (650, 650)
+		self.inputFlag = False
+		self.direction.y = 0
+		self.hitbox = self.rect.inflate(0,100)
+
+	def big_update(self):
+		self.rect.center = (self.rect.center[0], 250)
+
 	def update(self):
 		self.input()
 		self.cooldowns()
 		self.animate()
 		self.move(5)
-		print()
+		if not self.inputFlag:
+			self.big_update()
+		print(self.rect.y)

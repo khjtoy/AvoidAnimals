@@ -2,6 +2,9 @@ import pygame
 pygame.init()
 font = pygame.font.Font(None,30)
 
+def debug_r(info, rect):
+	debug(info, rect.y, rect.x, rect.w, rect.h)
+
 def debug(info,y = 10, x = 10, w = 10, h = 10):
 	display_surface = pygame.display.get_surface()
 	debug_surf = font.render(str(info),True,'Black')

@@ -12,7 +12,7 @@ from ui import UI
 from arrowItem import ArrowItem
 from thunder import Thunder
 from alphabet import Alphabet
-from debug import debug
+from debug import debug, debug_r
 import util
 
 class stage():
@@ -210,7 +210,7 @@ class stage():
 
 			# debug
 			ohit = self.player.get_hitbox()
-			debug('Player', ohit.top,ohit.left,ohit.width,ohit.height)
+			debug_r('Player', ohit)
 		
 
 class YSortCameraGroup(pygame.sprite.Group):

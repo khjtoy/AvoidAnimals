@@ -11,9 +11,9 @@ class Player(Entity):
 		self.rect = self.image.get_rect(topleft = pos)
 
 		self.hitbox = self.rect.inflate(-100,-100)
-		self.hitbox_offset = (0,100)
+		self.hitbox_offset = (0,50)
 		self.hitbox_origin = self.rect
-		
+
 		self.scale = (200, 200)
 		self.inputFlag = True
 
@@ -89,7 +89,7 @@ class Player(Entity):
 		# set the image
 		self.image = animation[int(self.frame_index)]
 		self.image = pygame.transform.scale(self.image, (self.scale[0], self.scale[1]))
-		self.rect = self.image.get_rect(center = self.hitbox.center)
+		self.rect = self.image.get_rect(center = self.get_hitbox().center)
 
 		# flicker
 		if self.isDamage:
@@ -113,6 +113,7 @@ class Player(Entity):
 
 	def big_update(self):
 		self.rect.center = (self.rect.center[0], 250)
+		self.hitbox.center = self.rect.center
 
 	def add_score(self):
 		if(pygame.time.get_ticks() - self.distance_timer >= 1000):

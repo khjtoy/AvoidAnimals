@@ -208,7 +208,7 @@ class stage():
 			#self.visible_sprites.enemy_update(self.player)
 
 			# debug
-			#debug('Player', self.player.hitbox.top,self.player.hitbox.left,self.player.hitbox.width,self.player.hitbox.height)
+			debug('Player', self.player.hitbox.top,self.player.hitbox.left,self.player.hitbox.width,self.player.hitbox.height)
 		
 
 class YSortCameraGroup(pygame.sprite.Group):

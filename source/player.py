@@ -12,6 +12,7 @@ class Player(Entity):
 
 		self.hitbox = self.rect.inflate(-100,-100)
 		self.hitbox_offset = (0,100)
+		self.hitbox_origin = self.rect
 
 		self.scale = (200, 200)
 		self.inputFlag = True
@@ -101,13 +102,14 @@ class Player(Entity):
 		self.scale = (650, 650)
 		self.inputFlag = False
 		self.direction.y = 0
+		self.hitbox_origin = self.hitbox 
 		self.hitbox = self.rect.inflate(0,200)
 
 	def small_mode(self):
 		self.scale = (200, 200)
 		#self.hitbox = self.rect.inflate(-100,-100)
 		self.inputFlag = True
-		self.hitbox = self.rect.inflate(-100, -100)
+		self.hitbox = self.hitbox_origin
 
 	def big_update(self):
 		self.rect.center = (self.rect.center[0], 250)

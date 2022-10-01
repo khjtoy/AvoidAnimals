@@ -13,7 +13,7 @@ class Player(Entity):
 		self.hitbox = self.rect.inflate(-100,-100)
 		self.hitbox_offset = (0,100)
 		self.hitbox_origin = self.rect
-
+		
 		self.scale = (200, 200)
 		self.inputFlag = True
 

@@ -1,6 +1,7 @@
 from cmath import rect
 import pygame
 from math import sin
+import util
 
 class Entity(pygame.sprite.Sprite):
 	def __init__(self,groups):
@@ -8,9 +9,13 @@ class Entity(pygame.sprite.Sprite):
 		self.frame_index = 0
 		self.animation_speed = 0.15
 		self.direction = pygame.math.Vector2()
+		self.hitbox = pygame.Rect(0,0,0,0)
 		self.hitbox_offset = (0,0)
 		self.t = 0
 		self.path_positions = [(0,0), (0, 0), (0, 0), (0, 0)]
+
+	def get_hitbox(self):
+		return util.cal_rect(self.hitbox, self.hitbox_offset)
 
 	def move(self,speed):
 		if self.direction.magnitude() != 0:

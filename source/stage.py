@@ -13,6 +13,7 @@ from arrowItem import ArrowItem
 from thunder import Thunder
 from alphabet import Alphabet
 from debug import debug
+import util
 
 class stage():
 	def __init__(self, screen):
@@ -208,7 +209,8 @@ class stage():
 			#self.visible_sprites.enemy_update(self.player)
 
 			# debug
-			debug('Player', self.player.hitbox.top,self.player.hitbox.left,self.player.hitbox.width,self.player.hitbox.height)
+			ohit = self.player.get_hitbox()
+			debug('Player', ohit.top,ohit.left,ohit.width,ohit.height)
 		
 
 class YSortCameraGroup(pygame.sprite.Group):

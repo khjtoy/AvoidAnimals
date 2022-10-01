@@ -24,6 +24,15 @@ class Player(Entity):
 		self.isDamage = False
 		self.hurt_time = None
 		self.invulnerability_duration = 500
+
+		self.hp = 3
+		self.god_mode = False
+		
+		self.show_item = [False, False, False, False]
+		self.alphabet_count = 0
+
+		self.distance = 0
+		self.distance_timer = pygame.time.get_ticks()
 	
 	def import_player_assets(self):
 		character_path = '../image/player/'
@@ -53,6 +62,21 @@ class Player(Entity):
 			if current_time - self.hurt_time >= self.invulnerability_duration:
 				self.isDamage = False
 
+	def god_moding(self):
+		if self.god_mode:
+			if pygame.time.get_ticks() - self.god_time >= 5000:
+				self.god_mode = False
+		else:
+			self.god_time = pygame.time.get_ticks()
+
+	def big_moding(self):
+		if not self.inputFlag:
+			if pygame.time.get_ticks() - self.big_time >= 5000:
+				self.small_mode()
+		else:
+			self.big_time = pygame.time.get_ticks()
+ 
+
 	def animate(self):
 		animation = self.animations[self.status]
 
@@ -77,16 +101,30 @@ class Player(Entity):
 		self.scale = (650, 650)
 		self.inputFlag = False
 		self.direction.y = 0
-		self.hitbox = self.rect.inflate(0,100)
+		self.hitbox = self.rect.inflate(0,200)
+
+	def small_mode(self):
+		self.scale = (200, 200)
+		#self.hitbox = self.rect.inflate(-100,-100)
+		self.inputFlag = True
+		self.hitbox = self.rect.inflate(-100, -100)
 
 	def big_update(self):
 		self.rect.center = (self.rect.center[0], 250)
 
+	def add_score(self):
+		if(pygame.time.get_ticks() - self.distance_timer >= 1000):
+			self.distance_timer = pygame.time.get_ticks()
+			self.distance += 1
+
 	def update(self):
 		self.input()
 		self.cooldowns()
+		self.god_moding()
+		self.big_moding()
 		self.animate()
 		self.move(5)
+		# score
+		self.add_score()
 		if not self.inputFlag:
 			self.big_update()
-		print(self.rect.y)

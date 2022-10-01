@@ -13,17 +13,24 @@ class Upgrade:
         #self.clicked = False
 
         self.item_names = ("recoverIcon", "placeIcon", "pupspeed", "lightning", "InvincibleIcon", "adownspeed")
-        self.text1 = ("        HP를 +1", "     5초동안 적의", "  자이언트가 되어", "화면에 있는 적에게", "    5초동안 적의", "    5초동안 적의")
+        self.text1 = ("        HP를 +1", "    15초동안 적의", "  자이언트가 되어", "화면에 있는 적에게", "    5초동안 적의", "    5초동안 적의")
         self.text2 = ("     회복합니다.", "위치를 미리 압니다.", "3초동안 돌진합니다.", "  번개를 내립니다.", "충돌을 무력화한다.", "속도가 느려집니다.")
         self.path = "../image/ui/"
 
+        self.useItem = False
+        self.useIndex = 0
+
     def display(self):
         self.image = pygame.image.load('../image/ui/panel.png').convert_alpha()
-        self.font = pygame.font.Font("../image/font/NeoPro.ttf", 32)
-        self.title_font = pygame.font.Font("../image/font/NeoPro.ttf", 100)
+        self.font = pygame.font.Font(UI_FONT, 32)
+        self.title_font = pygame.font.Font(UI_FONT, 100)
         self.title_text = self.title_font.render("아이템 선택!!", True, (0,0,255))
+        if pygame.mouse.get_pressed()[0] == 1:
+            self.originClick = True
+        else:
+            self.originClick = False
         for i in range(0, 3):
-            self.panels[i] = button.Button(self.basic_pos[0] + (i * 350), self.basic_pos[1], self.image, 3)
+            self.panels[i] = button.Button(self.basic_pos[0] + (i * 350), self.basic_pos[1], self.image, 3, self.originClick)
             self.indexs[i] = random.randint(0, 5)
             self.rect = self.image.get_rect()
 
@@ -44,5 +51,6 @@ class Upgrade:
             self.display_surface.blit(self.pos_text2, (140 + (350 * i),420))
 
             if self.isClicked:
-                print(self.indexs[i])
+                self.useIndex = self.indexs[i]
+                self.useItem = True
 

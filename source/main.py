@@ -2,6 +2,7 @@ import pygame, sys
 from settings import *
 
 from stage import stage
+from upgrade import Upgrade
 
 class Game:
     def __init__(self):
@@ -12,9 +13,6 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.stage = stage(self.screen)
-
-
-
         
     def run(self):
         while True:
@@ -28,8 +26,6 @@ class Game:
                     if event.key == pygame.K_1:
                         self.stage.player.big_mode()
                         self.stage.visible_sprites.bg_speed = 20
-
-            # self.screen.fill(WATER_COLOR)
 
             self.stage.run()
 

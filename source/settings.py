@@ -11,3 +11,5 @@ HITBOX_OFFSET = {
 
 # general colors
 WATER_COLOR = '#71ddee'
+
+UI_FONT = '../image/font/NeoPro.ttf'

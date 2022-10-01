@@ -1,11 +1,12 @@
 from turtle import distance
-import pygame 
+import pygame
+from debug import debug 
 from settings import *
 from entity import Entity
 from support import import_folder
 
 class Enemy(Entity):
-    def __init__(self,monster_name,pos,groups,damage_player):
+    def __init__(self,monster_name,pos,groups,enemys, player):
 
         super().__init__(groups)
         self.sprite_type = 'enemy'
@@ -15,6 +16,12 @@ class Enemy(Entity):
         self.hitbox = self.rect.inflate(-6,HITBOX_OFFSET['player'])
         self.direction.x = -1
         self.monster_name = monster_name
+        self.player = player
+
+        self.orginSpeed = 10 + ((self.player.distance / 10) * (5 / 10))
+        if int(self.orginSpeed) > 15:
+            self.orginSpeed = 15 
+        self.speed = self.orginSpeed
 
         # graphics setup
         self.import_enemy_assets(self.monster_name)
@@ -22,8 +29,7 @@ class Enemy(Entity):
 
         # timer
         self.timer = pygame.time.get_ticks()
-
-        self.damage_player = damage_player
+        self.enemyList = enemys 
 
     def import_enemy_assets(self, name):
         self.animations = {'Move': []}
@@ -46,21 +52,9 @@ class Enemy(Entity):
         self.image = pygame.transform.scale(self.image, (70, 70 - 13))
         self.rect = self.image.get_rect(center = self.hitbox.center)
 
-    def OncollisionEnter(self, player):
-        collide = pygame.Rect.colliderect(player.hitbox, self.rect)
-
-        # collision with the player
-        if collide:
-            self.damage_player()
-            self.kill()
-
     def update(self):
         self.animate()
         if self.monster_name == "pig":
-            self.move(10)
+            self.move(self.speed + ((self.player.distance // 10) * (5 / 10)))
         elif self.monster_name == "chicken":
             self.bezierMove(0.02)
-
-
-    def enemy_update(self, player):
-        self.OncollisionEnter(player)

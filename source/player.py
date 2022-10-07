@@ -10,8 +10,8 @@ class Player(Entity):
 		self.image = pygame.transform.scale(self.image, (200, 200))
 		self.rect = self.image.get_rect(topleft = pos)
 
-		self.hitbox = self.rect.inflate(-100,-100)
-		self.hitbox_offset = (0,50)
+		self.hitbox = self.rect.inflate(-140,-130)
+		self.hitbox_offset = (0,30)
 		self.hitbox_origin = self.rect
 
 		self.scale = (200, 200)
@@ -28,16 +28,23 @@ class Player(Entity):
 
 		self.hp = 3
 		self.god_mode = False
+		self.big_flag = False
 		
 		self.show_item = [False, False, False, False]
 		self.alphabet_count = 0
 
 		self.distance = 0
 		self.distance_timer = pygame.time.get_ticks()
+
+		# high score
+		try:
+			self.highestScore = (int)(self.getHeightScore())
+		except:
+			self.highestScore = 0
 	
 	def import_player_assets(self):
 		character_path = '../image/player/'
-		self.animations = {'Idle': [], 'Move': []}
+		self.animations = {'Idle': [], 'Move': [], 'Die': []}
 
 		for animation in self.animations.keys():
 			full_path = character_path + animation
@@ -98,18 +105,23 @@ class Player(Entity):
 		else:
 			self.image.set_alpha(255)
 
-	def big_mode(self):
+	def big_mode(self, origin_speed):
 		self.scale = (650, 650)
 		self.inputFlag = False
+		self.god_mode = True
+		self.big_flag = True
 		self.direction.y = 0
 		self.hitbox_origin = self.hitbox 
 		self.hitbox = self.rect.inflate(0,200)
+		self.origin_speed = origin_speed
 
 	def small_mode(self):
 		self.scale = (200, 200)
-		#self.hitbox = self.rect.inflate(-100,-100)
 		self.inputFlag = True
+		self.god_mode = False
+		self.big_flag = False
 		self.hitbox = self.hitbox_origin
+		self.origin_speed()
 
 	def big_update(self):
 		self.rect.center = (self.rect.center[0], 250)
@@ -118,7 +130,19 @@ class Player(Entity):
 	def add_score(self):
 		if(pygame.time.get_ticks() - self.distance_timer >= 1000):
 			self.distance_timer = pygame.time.get_ticks()
-			self.distance += 1
+
+			self.distance += 1 
+			if self.big_flag:
+				self.distance += 2
+
+			if self.highestScore < self.distance:
+				self.highestScore = self.distance
+			with open("highest score.txt", "w") as f:
+				f.write(str(self.highestScore))
+
+	def getHeightScore(self):
+		with open("highest score.txt", "r") as f:
+			return f.read()
 
 	def update(self):
 		self.input()

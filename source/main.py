@@ -9,10 +9,10 @@ class Game:
         # general setup 
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH,HEIGTH))
-        pygame.display.set_caption('Zelda')
+        pygame.display.set_caption('Avoid Animals')
         self.clock = pygame.time.Clock()
 
-        self.stage = stage(self.screen)
+        self.stage = stage(self.screen, self.reset)
         
     def run(self):
         while True:
@@ -20,18 +20,16 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_m:
-                        self.stage.item_panel()
-                    if event.key == pygame.K_1:
-                        self.stage.player.big_mode()
-                        self.stage.visible_sprites.bg_speed = 20
 
             self.stage.run()
 
             pygame.display.update()
             self.clock.tick(FPS)
+            
 
+    def reset(self):
+        del self.stage
+        self.stage = stage(self.screen, self.reset)
 
 if __name__ == '__main__':
     game = Game()

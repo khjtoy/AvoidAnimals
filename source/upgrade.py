@@ -14,7 +14,7 @@ class Upgrade:
 
         self.item_names = ("recoverIcon", "placeIcon", "pupspeed", "lightning", "InvincibleIcon", "adownspeed")
         self.text1 = ("        HP를 +1", "    15초동안 적의", "  자이언트가 되어", "화면에 있는 적에게", "    5초동안 적의", "    5초동안 적의")
-        self.text2 = ("     회복합니다.", "위치를 미리 압니다.", "3초동안 돌진합니다.", "  번개를 내립니다.", "충돌을 무력화한다.", "속도가 느려집니다.")
+        self.text2 = ("     회복합니다.", "위치를 미리 압니다.", "5초동안 돌진합니다.", "  번개를 내립니다.", "충돌을 무력화한다.", "속도가 느려집니다.")
         self.path = "../image/ui/"
 
         self.useItem = False

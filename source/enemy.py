@@ -1,9 +1,9 @@
 from turtle import distance
 import pygame
-from debug import debug 
 from settings import *
 from entity import Entity
 from support import import_folder
+from debug import debug, debug_r
 
 class Enemy(Entity):
     def __init__(self,monster_name,pos,groups,enemys, player):
@@ -13,7 +13,8 @@ class Enemy(Entity):
 
         self.image = pygame.image.load('../image/test_enemy.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
-        self.hitbox = self.rect.inflate(-6,HITBOX_OFFSET['player'])
+        self.hitbox = self.rect.inflate(40,40)
+        self.hitbox_offset = (10, 0)
         self.direction.x = -1
         self.monster_name = monster_name
         self.player = player
@@ -31,6 +32,15 @@ class Enemy(Entity):
         self.timer = pygame.time.get_ticks()
         self.enemyList = enemys 
 
+        # sound
+        if monster_name == "pig":
+            self.main_sound = pygame.mixer.Sound("../audio/pig_sound.mp3")
+        elif monster_name == "chicken":
+            self.main_sound = pygame.mixer.Sound("../audio/chicken_sound.mp3")
+        self.main_sound.set_volume(0.5)
+        self.main_sound.play()
+        
+            
     def import_enemy_assets(self, name):
         self.animations = {'Move': []}
         charcter_path = f'../image/enemy/{name}/'
@@ -58,3 +68,8 @@ class Enemy(Entity):
             self.move(self.speed + ((self.player.distance // 10) * (5 / 10)))
         elif self.monster_name == "chicken":
             self.bezierMove(0.02)
+
+        # debug
+        #ohit = self.get_hitbox()
+        #debug_r('Enemy', ohit)
+        

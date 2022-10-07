@@ -1,7 +1,5 @@
-from calendar import day_name
+from ast import main
 import random
-import this
-from turtle import Screen, distance
 import pygame 
 import math
 from player import Player
@@ -16,11 +14,14 @@ from debug import debug, debug_r
 import util
 
 class stage():
-	def __init__(self, screen):
+	def __init__(self, screen, reset):
 		# get the display surface 
 		self.display_surface = pygame.display.get_surface() # 아직까지는 미사용
 		self.game_paused = False
-		
+		self.game_over = False
+
+		self.reset = reset
+
 		# sprite group setup
 		self.visible_sprites = YSortCameraGroup(screen)
 
@@ -43,12 +44,20 @@ class stage():
 		self.enemyPos = [0,100,-100]
 
 		# user interface
-		self.ui = UI(self.player)
+		self.ui = UI(self.player, self.visible_sprites.change_scene)
 		self.upgrade = Upgrade(self.player)
 
 		self.slow_mode = False
 		self.push_arrow = False
-		self.arrow_mode = False		
+		self.arrow_mode = False	
+
+		# audio
+		self.main_sound = pygame.mixer.Sound("../audio/main.mp3")	
+		self.main_sound.set_volume(0.5)
+		self.main_sound.play(loops = -1)
+
+		self.damage_sound = pygame.mixer.Sound("../audio/player_damage.wav")
+		self.damage_sound.set_volume(1)
 		
 	def create_background(self):
 		pass
@@ -59,7 +68,24 @@ class stage():
 		if not self.player.isDamage:
 			self.player.isDamage = True
 			self.player.hp -= 1
+			self.damage_sound.play()
+			if(self.player.hp <= 0):
+				self.gameover()
 			self.player.hurt_time = pygame.time.get_ticks()
+
+	def gameover(self):
+		self.player.status = "Die"
+		self.visible_sprites.bg_speed = 0
+		self.game_over = True
+		self.main_sound.stop()
+		#self.reset()
+
+	def gameover_update(self):
+		self.ui.gameover_display()
+		#print(pygame.key.get_pressed())
+		pressed = pygame.key.get_pressed()
+		if pressed[pygame.K_r]:
+			self.reset()
 
 	def slow_enemy(self):
 		for i in enumerate(self.enemys):
@@ -135,7 +161,13 @@ class stage():
 			
 	def OncollisionEnterEnemys(self):
 		for i in enumerate(self.enemys):
-			collide = pygame.Rect.colliderect(self.player.hitbox, self.enemys[i[0]].rect)
+
+			if self.enemys[i[0]].rect.x <= -200:
+				self.enemys[i[0]].kill()
+				del self.enemys[i[0]]
+				continue
+
+			collide = pygame.Rect.colliderect(self.player.hitbox, self.enemys[i[0]].hitbox)
 			# collision with the player
 			if collide:
 				self.damage_player()
@@ -145,7 +177,13 @@ class stage():
 
 	def OncollisionEnterAlphabets(self):
 		for i in enumerate(self.alphabets):
-			collide = pygame.Rect.colliderect(self.player.hitbox, self.alphabets[i[0]].rect)
+
+			if self.alphabets[i[0]].rect.x <= -200:
+				self.alphabets[i[0]].kill()
+				del self.alphabets[i[0]]
+				continue
+
+			collide = pygame.Rect.colliderect(self.player.hitbox, self.alphabets[i[0]].hitbox)
 			# collision with the player
 			if collide:
 				if not self.player.show_item[self.alphabets[i[0]].index]:
@@ -175,7 +213,7 @@ class stage():
 		elif self.upgrade.useIndex == 1:
 			self.arrow_mode = True
 		elif self.upgrade.useIndex == 2:
-			self.player.big_mode()
+			self.player.big_mode(self.visible_sprites.orgin_speed)
 			self.visible_sprites.bg_speed = 20
 		elif self.upgrade.useIndex == 3:
 			self.thunder_mode()
@@ -185,10 +223,14 @@ class stage():
 			self.slow_mode = True
 
 		self.upgrade.useItem = False
+		
 
 	def run(self):
 		self.visible_sprites.custom_draw(self.player, self.game_paused)
-		self.ui.display(self.player)
+		self.ui.display(self.player, self.visible_sprites.current_scene)
+
+		if self.visible_sprites.current_scene == "start":
+			return
 
 		if self.slow_mode:
 			self.slow_enemy()
@@ -197,6 +239,8 @@ class stage():
 			self.upgrade.drawPanel()
 			if self.upgrade.useItem:
 				self.play_item()
+		elif self.game_over:
+			self.gameover_update()
 		else:
 			self.spawn_enemy()
 			self.spawn_alphabet()
@@ -209,8 +253,8 @@ class stage():
 			#self.visible_sprites.enemy_update(self.player)
 
 			# debug
-			ohit = self.player.get_hitbox()
-			debug_r('Player', ohit)
+			#ohit = self.player.get_hitbox()
+			#debug_r('Player', ohit)
 		
 
 class YSortCameraGroup(pygame.sprite.Group):
@@ -232,20 +276,30 @@ class YSortCameraGroup(pygame.sprite.Group):
 		# define game variables
 		self.scroll = 0
 		self.tiles = math.ceil(WIDTH / self.bg_width) + 1
+
+		self.current_scene = "start"
 		
-		self.bg_speed = 5
+		self.orgin_speed()
+
+	def change_scene(self):
+		self.current_scene = "game"
 
 	def scroll_background(self):
 		# draw scroll background
 		for i in range(0, self.tiles):
 			self.myscreen.blit(self.floor_surf, (i * self.bg_width + self.scroll, 0))
 
+		if self.current_scene == "start":
+			return
 		# scroll background
 		self.scroll -= self.bg_speed
 
 		# reset scroll
 		if abs(self.scroll) > self.bg_width:
 			self.scroll = 0
+
+	def orgin_speed(self):
+		self.bg_speed = 5
 
 	def custom_draw(self, player, isPaused):
 		# drawing the floor
@@ -259,8 +313,3 @@ class YSortCameraGroup(pygame.sprite.Group):
 		for sprite in sorted(self.sprites(),key = lambda sprite: sprite.rect.centery):
 			offset_pos = sprite.rect.topleft
 			self.display_surface.blit(sprite.image,offset_pos)
-
-	def enemy_update(self,player):
-		enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, 'sprite_type') and sprite.sprite_type == 'enemy']
-		for enemy in enemy_sprites:
-			enemy.enemy_update(player)
